@@ -15,8 +15,18 @@
   "module": "dist/react-leaflet-milsymbol.es.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist/*.js",
+    "dist/*.js.map",
+    "dist/*.d.ts",
+    "dist/*.d.ts.map"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/react-leaflet-milsymbol.es.js",
+      "require": "./dist/react-leaflet-milsymbol.umd.js"
+    }
+  },
   "keywords": [
     "react",
     "leaflet",
@@ -29,7 +39,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && tsc -p tsconfig.build.json",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -38,7 +48,7 @@
     "milsymbol": "^3.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
-    "react-leaflet": "^4.0.0"
+    "react-leaflet": "^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

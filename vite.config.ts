@@ -9,7 +9,12 @@ export default defineConfig({
     react(),
     dts({
       insertTypesEntry: true,
-      include: ['src'],
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+      rollupTypes: true,
+      clearPureImport: true,
+      staticImport: true,
+      outDir: 'dist',
+      bundledPackages: Object.keys(pkg.peerDependencies || {}),
     }),
   ],
   build: {
@@ -21,10 +26,8 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        ...Object.keys(pkg.devDependencies || {}),
+        ...Object.keys(pkg.peerDependencies || {}),
         'react/jsx-runtime',
-        'leaflet',
-        'react-leaflet',
       ],
       output: {
         globals: {
@@ -35,11 +38,12 @@ export default defineConfig({
           'milsymbol': 'milsymbol',
           'react/jsx-runtime': 'jsxRuntime',
         },
+        sourcemap: true,
         banner: '/*\n * react-leaflet-milsymbol\n * A React Leaflet v4 wrapper for milsymbol\n */',
       },
     },
     sourcemap: true,
-    minify: 'esbuild',
+    minify: false,
   },
   optimizeDeps: {
     exclude: ['milsymbol'],
