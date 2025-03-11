@@ -4,6 +4,8 @@
 
 A React Leaflet v4 integration for the milsymbol library, allowing you to easily add military symbols to your React Leaflet maps.
 
+![React Leaflet Milsymbol Example](./assets/react-leaflet-milsymbol-screenshot.png)
+
 ## Installation
 
 ```bash
