@@ -27,6 +27,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,6 +48,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
+      - name: Create version branch
+        if: ${{ github.event.inputs.specific_version != '' || github.event.inputs.version_increment != 'none' }}
+        run: |
+          BRANCH_NAME="version-update-$(date +'%Y%m%d%H%M%S')"
+          git checkout -b $BRANCH_NAME
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
       - name: Update version with specific version if provided
         if: ${{ github.event.inputs.specific_version != '' }}
         run: npm version ${{ github.event.inputs.specific_version }} -m "Bump version to %s [skip ci]"
@@ -61,11 +69,20 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Create Pull Request for version change
+        if: ${{ github.event.inputs.version_increment != 'none' || github.event.inputs.specific_version != '' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update version [skip ci]"
+          title: "Version update"
+          body: |
+            Automated version update via GitHub Actions workflow
+          branch: ${{ env.BRANCH_NAME }}
+          base: main
+          delete-branch: true
+
       - name: Publish to npm
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          
-      - name: Push version changes
-        if: ${{ github.event.inputs.version_increment != 'none' || github.event.inputs.specific_version != '' }}
-        run: git push --follow-tags
