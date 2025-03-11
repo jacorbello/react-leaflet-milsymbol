@@ -16,6 +16,9 @@ yarn add react-leaflet-milsymbol
 pnpm add react-leaflet-milsymbol
 ```
 
+> [!IMPORTANT]
+> If using React 19, you will need to add the `--legacy-peer-deps` flag, as `react-leaflet` only supports React `^18.0.0`
+
 ### Dependencies
 
 This package requires the following peer dependencies:
