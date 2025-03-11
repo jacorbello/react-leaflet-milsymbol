@@ -8,7 +8,7 @@
     "url": "git+https://github.com/jacorbello/react-leaflet-milsymbol.git"
   },
   "author": "jacorbello",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "license": "MIT",
   "main": "dist/react-leaflet-milsymbol.umd.js",
