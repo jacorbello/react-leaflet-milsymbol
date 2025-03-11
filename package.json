@@ -1,0 +1,64 @@
+{
+  "name": "react-leaflet-milsymbol",
+  "description": "A React Leaflet v4 wrapper for the milsymbol library",
+  "private": false,
+  "homepage": "https://github.com/jacorbello/react-leaflet-milsymbol",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacorbello/react-leaflet-milsymbol.git"
+  },
+  "author": "jacorbello",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "main": "dist/react-leaflet-milsymbol.umd.js",
+  "module": "dist/react-leaflet-milsymbol.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "leaflet",
+    "react-leaflet",
+    "react-leaflet-v4",
+    "milsymbol",
+    "military",
+    "symbols",
+    "gis"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "leaflet": "^1.9.0",
+    "milsymbol": "^3.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-leaflet": "^4.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/leaflet": "^1.9.16",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "leaflet": "^1.9.4",
+    "milsymbol": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-leaflet": "^5.0.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^6.2.0",
+    "vite-plugin-dts": "^4.5.3"
+  }
+}
