@@ -125,6 +125,30 @@ pre {
     font-size: 0.9rem;
 }
 
+.format-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 0.5em;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.format-badge.letter {
+    background-color: #e8f4fd;
+    color: #1a73a7;
+    border: 1px solid #b8ddf0;
+}
+
+.format-badge.numeric {
+    background-color: #edf7ed;
+    color: #2e7d32;
+    border: 1px solid #b8e0b8;
+}
+
 .footer {
     margin-top: 2rem;
     padding-top: 1rem;

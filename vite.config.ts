@@ -43,7 +43,7 @@ export default defineConfig({
       },
     },
     sourcemap: true,
-    minify: false,
+    minify: true,
   },
   optimizeDeps: {
     exclude: ['milsymbol'],

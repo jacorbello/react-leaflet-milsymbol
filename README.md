@@ -49,9 +49,19 @@ function MyMap() {
       />
       
       {/* Add a military symbol to the map */}
+      {/* SIDC format (MIL-STD-2525C): S=Warfighting, F=Friend, G=Ground, P=Present */}
+      {/* Common SIDCs:
+            SFGPEWRH--MT  - Friendly Ground Electronic Warfare
+            SFGPUCA---MT  - Friendly Ground Armor
+            SFGPUCD---MT  - Friendly Ground Air Defense
+            SFGPUCF---MT  - Friendly Ground Artillery
+            SHGPUCF---MT  - Hostile Ground Artillery
+            SUGPUCF---MT  - Unknown Ground Artillery
+            SNGPUCF---MT  - Neutral Ground Artillery
+      */}
       <MilSymbol
         position={[51.505, -0.09]}
-        sidc="SFGPEWRH--MT" // Symbol Identification Code
+        sidc="SFGPEWRH--MT"
         size={30}
         options={{
           size: 35,
@@ -108,9 +118,10 @@ The options object can include any properties available in the milsymbol library
 #### Custom Symbol Styling
 
 ```jsx
+{/* SHGPUCA---MT - Hostile (H) Ground Armor unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
+  sidc="SHGPUCA---MT"
   options={{
     size: 40,
     fill: true,
@@ -125,10 +136,11 @@ The options object can include any properties available in the milsymbol library
 #### With Popup and Tooltip
 
 ```jsx
+{/* SNGPUCD---MT - Neutral (N) Ground Air Defense unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
-  tooltipContent="Infantry Unit"
+  sidc="SNGPUCD---MT"
+  tooltipContent="Air Defense Unit"
   popupContent={
     <div>
       <h3>Infantry Unit</h3>
@@ -142,9 +154,10 @@ The options object can include any properties available in the milsymbol library
 #### With Event Handlers
 
 ```jsx
+{/* SUGPUCF---MT - Unknown (U) Ground Artillery unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
+  sidc="SUGPUCF---MT"
   eventHandlers={{
     click: () => {
       console.log('Symbol clicked!');
@@ -174,7 +187,9 @@ A hook for creating milsymbol instances outside of the component.
 import { useMilSymbol } from 'react-leaflet-milsymbol';
 
 function SymbolPreview() {
-  const symbol = useMilSymbol("SFGPEWRH--MT", { size: 30 });
+  // MIL-STD-2525D numeric SIDC format is also supported:
+  // "10031000001101110000" (version=10, friend, ground, land unit)
+  const symbol = useMilSymbol("SFGPUCA---MT", { size: 30 });
   
   return (
     <div>
