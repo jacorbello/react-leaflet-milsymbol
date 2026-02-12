@@ -59,7 +59,7 @@ jobs:
           body: |
             Bumps package version to `${{ env.NEW_VERSION }}`.
 
-            Once merged, create a release to trigger publishing to npm.
+            Publishing to npm will trigger automatically when this PR is merged.
           branch: "version-bump/${{ env.NEW_VERSION }}"
           base: main
           delete-branch: true

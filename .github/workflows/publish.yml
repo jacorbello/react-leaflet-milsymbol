@@ -1,34 +1,58 @@
 name: Publish to npm
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for version change
+        id: version_check
+        run: |
+          OLD_VERSION=$(git diff HEAD~1 HEAD -- package.json | grep -E '^\-.*"version"' | grep -oP '\d+\.\d+\.\d+' || echo "")
+          NEW_VERSION=$(git diff HEAD~1 HEAD -- package.json | grep -E '^\+.*"version"' | grep -oP '\d+\.\d+\.\d+' || echo "")
+          if [ -n "$OLD_VERSION" ] && [ -n "$NEW_VERSION" ] && [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Version changed from $OLD_VERSION to $NEW_VERSION"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No version change detected"
+          fi
 
       - name: Setup Node.js
+        if: steps.version_check.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
+        if: steps.version_check.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: npm ci
 
       - name: Lint
+        if: steps.version_check.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: npm run lint
 
       - name: Build
+        if: steps.version_check.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: npm run build
 
       - name: Publish to npm
+        if: steps.version_check.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: npm publish --provenance --access public

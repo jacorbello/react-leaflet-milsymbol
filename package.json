@@ -2,7 +2,7 @@
   "name": "react-leaflet-milsymbol",
   "description": "A React Leaflet v4 wrapper for the milsymbol library",
   "private": false,
-  "homepage": "https://github.com/jacorbello/react-leaflet-milsymbol",
+  "homepage": "https://jacorbello.github.io/react-leaflet-milsymbol/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jacorbello/react-leaflet-milsymbol.git"
