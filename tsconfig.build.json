@@ -13,9 +13,10 @@
         "src/**/*"
     ],
     "exclude": [
-        "src/App.tsx", 
+        "src/App.tsx",
         "src/App.css",
         "src/main.tsx",
-        "src/index.css"
+        "src/index.css",
+        "src/__tests__"
     ]
 }

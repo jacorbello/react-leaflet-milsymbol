@@ -4,6 +4,8 @@
 
 A React Leaflet v4 integration for the milsymbol library, allowing you to easily add military symbols to your React Leaflet maps.
 
+**[Live Demo](https://jacorbello.github.io/react-leaflet-milsymbol/)**
+
 ![React Leaflet Milsymbol Example](./assets/react-leaflet-milsymbol-screenshot.png)
 
 ## Installation
@@ -31,12 +33,22 @@ This package requires the following peer dependencies:
 
 Make sure to install these dependencies in your project if you haven't already.
 
+## SIDC Formats
+
+The `sidc` prop accepts Symbol Identification Codes in both letter-based (APP-6B/C) and numeric (APP-6D) formats. Both are passed directly to milsymbol.
+
+| Format | Length | Example | Description |
+| ------ | ------ | ------- | ----------- |
+| Letter-based (APP-6B/C) | 12–15 characters | `SFGPEWRH--MT` | Traditional format using letters to encode affiliation, dimension, function, etc. |
+| Numeric (APP-6D) | 20 digits | `10031000001211000000` | Newer standard using numeric fields for symbol set, entity, and modifiers |
+
+For more details on constructing SIDCs, see the [milsymbol documentation](https://www.spatialillusions.com/milsymbol/documentation.html).
+
 ## Usage
 
-### Basic Example
+### Basic Example (Letter-based SIDC)
 
 ```jsx
-import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { MilSymbol } from 'react-leaflet-milsymbol';
 
@@ -47,24 +59,29 @@ function MyMap() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      
-      {/* Add a military symbol to the map */}
+
       <MilSymbol
         position={[51.505, -0.09]}
-        sidc="SFGPEWRH--MT" // Symbol Identification Code
-        size={30}
+        sidc="SFGPEWRH--MT"
         options={{
           size: 35,
           fill: true,
           fillOpacity: 0.5,
-          strokeWidth: 2,
         }}
       />
     </MapContainer>
   );
 }
+```
 
-export default MyMap;
+### Basic Example (Numeric SIDC)
+
+```jsx
+<MilSymbol
+  position={[51.505, -0.09]}
+  sidc="10031000001211000000"
+  options={{ size: 35 }}
+/>
 ```
 
 ### Props
@@ -74,12 +91,12 @@ The `MilSymbol` component accepts the following props:
 | Prop             | Type                    | Description                                              |
 | ---------------- | ----------------------- | -------------------------------------------------------- |
 | `position`       | `[number, number]`      | Latitude and longitude where the symbol should be placed |
-| `sidc`           | `string`                | Symbol Identification Code (SIDC)                        |
-| `size`           | `number`                | Size of the symbol (optional)                            |
+| `sidc`           | `string`                | Symbol Identification Code (letter-based or numeric)     |
+| `size`           | `number`                | Size of the symbol (default: 35)                         |
 | `options`        | `object`                | Additional options to customize the symbol (see below)   |
 | `tooltipContent` | `string` or `ReactNode` | Optional content for tooltip                             |
 | `popupContent`   | `string` or `ReactNode` | Optional content for popup                               |
-| `eventHandlers`  | `object`                | Event handlers for the symbol                            |
+| `eventHandlers`  | `object`                | Leaflet event handlers for the marker                    |
 
 #### Options Object
 
@@ -108,9 +125,10 @@ The options object can include any properties available in the milsymbol library
 #### Custom Symbol Styling
 
 ```jsx
+{/* SHGPUCA---MT - Hostile (H) Ground Armor unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
+  sidc="SHGPUCA---MT"
   options={{
     size: 40,
     fill: true,
@@ -125,9 +143,10 @@ The options object can include any properties available in the milsymbol library
 #### With Popup and Tooltip
 
 ```jsx
+{/* SNGPUCD---MT - Neutral (N) Ground Air Defense unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
+  sidc="10031000001211000000"
   tooltipContent="Infantry Unit"
   popupContent={
     <div>
@@ -142,9 +161,10 @@ The options object can include any properties available in the milsymbol library
 #### With Event Handlers
 
 ```jsx
+{/* SUGPUCF---MT - Unknown (U) Ground Artillery unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
+  sidc="SUGPUCF---MT"
   eventHandlers={{
     click: () => {
       console.log('Symbol clicked!');
@@ -168,14 +188,14 @@ The main component for adding military symbols to your React Leaflet map.
 
 #### `useMilSymbol(sidc, options)`
 
-A hook for creating milsymbol instances outside of the component.
+A hook for creating milsymbol instances outside of the component. Accepts both letter-based and numeric SIDCs.
 
 ```jsx
 import { useMilSymbol } from 'react-leaflet-milsymbol';
 
 function SymbolPreview() {
-  const symbol = useMilSymbol("SFGPEWRH--MT", { size: 30 });
-  
+  const symbol = useMilSymbol("10031000001211000000", { size: 30 });
+
   return (
     <div>
       <h3>Symbol Preview</h3>
@@ -183,6 +203,19 @@ function SymbolPreview() {
     </div>
   );
 }
+```
+
+## Demo
+
+A live demo is available at **[jacorbello.github.io/react-leaflet-milsymbol](https://jacorbello.github.io/react-leaflet-milsymbol/)** showing various military symbols on a Leaflet map.
+
+To run the demo locally:
+
+```bash
+git clone https://github.com/jacorbello/react-leaflet-milsymbol.git
+cd react-leaflet-milsymbol
+npm install
+npm run dev
 ```
 
 ## Contributing
