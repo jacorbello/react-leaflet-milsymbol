@@ -125,9 +125,10 @@ The options object can include any properties available in the milsymbol library
 #### Custom Symbol Styling
 
 ```jsx
+{/* SHGPUCA---MT - Hostile (H) Ground Armor unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
+  sidc="SHGPUCA---MT"
   options={{
     size: 40,
     fill: true,
@@ -142,6 +143,7 @@ The options object can include any properties available in the milsymbol library
 #### With Popup and Tooltip
 
 ```jsx
+{/* SNGPUCD---MT - Neutral (N) Ground Air Defense unit */}
 <MilSymbol
   position={[51.505, -0.09]}
   sidc="10031000001211000000"
@@ -159,9 +161,10 @@ The options object can include any properties available in the milsymbol library
 #### With Event Handlers
 
 ```jsx
+{/* SUGPUCF---MT - Unknown (U) Ground Artillery unit */}
 <MilSymbol
   position={[51.505, -0.09]}
-  sidc="SFGPEWRH--MT"
+  sidc="SUGPUCF---MT"
   eventHandlers={{
     click: () => {
       console.log('Symbol clicked!');
