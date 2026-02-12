@@ -41,6 +41,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && tsc -p tsconfig.build.json",
     "lint": "eslint .",
+    "build:demo": "vite build --config vite.config.demo.ts",
     "preview": "vite preview"
   },
   "peerDependencies": {
