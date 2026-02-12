@@ -56,3 +56,5 @@ jobs:
       - name: Publish to npm
         if: steps.version_check.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ''
