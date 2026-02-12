@@ -101,6 +101,9 @@ export interface MilSymbolProps {
     /** Optional content for popup */
     popupContent?: string | ReactNode;
 
+    /** Arbitrary react-leaflet children (tooltips, popups, custom layers) */
+    children?: ReactNode;
+
     /** Event handlers for the symbol */
     eventHandlers?: LeafletEventHandlerFnMap;
 }
