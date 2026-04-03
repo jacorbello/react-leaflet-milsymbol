@@ -1,6 +1,7 @@
 # react-leaflet-milsymbol
 
 ![NPM Version](https://img.shields.io/npm/v/react-leaflet-milsymbol?label=react-leaflet-milsymbol&link=https%3A%2F%2Fnpmjs.com%2Fpackage%2Freact-leaflet-milsymbol)
+[![codecov](https://codecov.io/gh/jacorbello/react-leaflet-milsymbol/graph/badge.svg?token=I0cmpqpoAm)](https://codecov.io/gh/jacorbello/react-leaflet-milsymbol)
 
 A React Leaflet v4 integration for the milsymbol library, allowing you to easily add military symbols to your React Leaflet maps.
 
