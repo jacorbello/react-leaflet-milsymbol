@@ -76,7 +76,11 @@ jobs:
           git add package.json package-lock.json
           git commit -m "chore(release): bump version to ${{ steps.bump.outputs.new_version }}"
           git tag -a "v${{ steps.bump.outputs.new_version }}" -m "Release v${{ steps.bump.outputs.new_version }}"
+          git remote set-url origin "https://x-access-token:${RELEASE_TOKEN}@github.com/${{ github.repository }}.git"
           git push origin main --follow-tags
+          git remote set-url origin "https://github.com/${{ github.repository }}.git"
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
   publish:
     needs: release
