@@ -1,0 +1,154 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_increment:
+        description: 'Version increment type'
+        required: false
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+      specific_version:
+        description: 'Specific version (overrides increment if provided, e.g. 1.2.3)'
+        required: false
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run build
+
+  release:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      new_version: ${{ steps.bump.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version
+        id: bump
+        run: |
+          if [ -n "${{ github.event.inputs.specific_version }}" ]; then
+            npm version "${{ github.event.inputs.specific_version }}" --no-git-tag-version
+          else
+            npm version "${{ github.event.inputs.version_increment }}" --no-git-tag-version
+          fi
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Update lockfile
+        run: npm install --package-lock-only
+
+      - name: Commit, tag, and push
+        run: |
+          git add package.json package-lock.json
+          git commit -m "chore(release): bump version to ${{ steps.bump.outputs.new_version }}"
+          git tag "v${{ steps.bump.outputs.new_version }}"
+          git push origin main --follow-tags
+
+  publish:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "v${{ needs.release.outputs.new_version }}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Check if version already published
+        id: check
+        run: |
+          if npm view "react-leaflet-milsymbol@${{ needs.release.outputs.new_version }}" version 2>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Version ${{ needs.release.outputs.new_version }} already exists on npm, skipping publish"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        if: steps.check.outputs.exists != 'true'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ''
+
+  deploy-demo:
+    needs: [release, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "v${{ needs.release.outputs.new_version }}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - run: npm ci
+      - run: npm run build:demo
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-demo
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  github-release:
+    needs: [release, publish, deploy-demo]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "v${{ needs.release.outputs.new_version }}"
+          fetch-depth: 0
+
+      - name: Create GitHub Release
+        run: gh release create "v${{ needs.release.outputs.new_version }}" --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
