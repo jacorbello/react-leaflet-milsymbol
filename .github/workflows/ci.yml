@@ -60,11 +60,14 @@ jobs:
           react-leaflet@${{ matrix.react-leaflet }}
           @testing-library/dom@^10
       # A silently-failed override would make the run below meaningless.
+      # Read package.json off disk rather than require()-ing it: react-leaflet's
+      # "exports" map does not expose the ./package.json subpath.
       - name: Verify installed versions
         run: |
           node -e "
-            const rl = require('react-leaflet/package.json').version;
-            const r = require('react/package.json').version;
+            const fs = require('fs');
+            const v = (p) => JSON.parse(fs.readFileSync('node_modules/' + p + '/package.json', 'utf8')).version;
+            const rl = v('react-leaflet'), r = v('react');
             console.log('react-leaflet', rl, '| react', r);
             if (!rl.startsWith('${{ matrix.react-leaflet }}')) throw new Error('react-leaflet override failed: ' + rl);
             if (!r.startsWith('${{ matrix.react }}.')) throw new Error('react override failed: ' + r);
