@@ -13,7 +13,7 @@ export const useMilSymbol = (sidc: string, options: SymbolOptions = {}) => {
     const optionsKey = JSON.stringify(options);
     return useMemo(() => {
         return new ms.Symbol(sidc, {
-            size: options.size ?? 35,
+            size: 35,
             ...options,
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps

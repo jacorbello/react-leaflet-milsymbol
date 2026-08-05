@@ -7,14 +7,17 @@ import { useMilSymbol } from '../hooks/useMilSymbol';
 export const MilSymbol: FC<MilSymbolProps> = ({
     position,
     sidc,
-    size = 35,
+    size,
     options = {},
     tooltipContent,
     popupContent,
     children,
     eventHandlers,
 }) => {
-    const milSymbol = useMilSymbol(sidc, { size, ...options });
+    // The explicit `size` prop wins over `options.size`, but only when actually
+    // supplied — a plain `{ ...options, size }` would let an undefined prop
+    // clobber options.size. The 35 default lives in useMilSymbol.
+    const milSymbol = useMilSymbol(sidc, { ...options, ...(size !== undefined && { size }) });
 
     // ponytail: react-leaflet's updateMarker already calls setIcon when the
     // icon prop identity changes; no manual ref/effect needed.
