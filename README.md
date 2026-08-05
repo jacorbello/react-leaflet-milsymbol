@@ -21,7 +21,7 @@ pnpm add react-leaflet-milsymbol
 ```
 
 > [!IMPORTANT]
-> If using React 19, you will need to add the `--legacy-peer-deps` flag, as `react-leaflet` only supports React `^18.0.0`
+> If using React 19, install `react-leaflet` v5 — v4 supports React `^18.0.0` only.
 
 ### Dependencies
 
@@ -30,7 +30,7 @@ This package requires the following peer dependencies:
 - `react` (v18.0.0 or v19.0.0)
 - `react-dom` (v18.0.0 or v19.0.0)
 - `leaflet` (v1.9.0 or higher)
-- `react-leaflet` (v4.0.0 or higher)
+- `react-leaflet` (v4 or v5 — use v5 with React 19)
 - `milsymbol` (v3.0.0 or higher)
 
 Make sure to install these dependencies in your project if you haven't already.
@@ -47,6 +47,12 @@ The `sidc` prop accepts Symbol Identification Codes in both letter-based (APP-6B
 For more details on constructing SIDCs, see the [milsymbol documentation](https://www.spatialillusions.com/milsymbol/documentation.html).
 
 ## Usage
+
+> [!WARNING]
+> **Breaking change in 0.3.0** — the `size` prop now takes precedence over
+> `options.size`. If you passed both, the symbol previously rendered at
+> `options.size` and now renders at `size`. Passing only one of them is
+> unaffected.
 
 ### Basic Example (Letter-based SIDC)
 
@@ -94,7 +100,7 @@ The `MilSymbol` component accepts the following props:
 | ---------------- | ----------------------- | -------------------------------------------------------- |
 | `position`       | `[number, number]`      | Latitude and longitude where the symbol should be placed |
 | `sidc`           | `string`                | Symbol Identification Code (letter-based or numeric)     |
-| `size`           | `number`                | Size of the symbol (default: 35)                         |
+| `size`           | `number`                | Size of the symbol (default: 35). Takes precedence over `options.size` |
 | `options`        | `object`                | Additional options to customize the symbol (see below)   |
 | `tooltipContent` | `string` or `ReactNode` | Optional content for tooltip                             |
 | `popupContent`   | `string` or `ReactNode` | Optional content for popup                               |
