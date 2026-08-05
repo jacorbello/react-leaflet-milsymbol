@@ -171,4 +171,40 @@ describe('MilSymbol', () => {
     render(<MilSymbol position={[0, 0]} sidc="10031000161200000000" />);
     expect(screen.getByTestId('marker')).toBeInTheDocument();
   });
+
+  describe('size precedence', () => {
+    // Compare against a reference render at a known size rather than hardcoding
+    // milsymbol's pixel math, which is not part of this library's contract.
+    const widthFor = (el: React.ReactElement) => {
+      divIconInstances.length = 0;
+      const { unmount } = render(el);
+      const width = (divIconInstances[0].iconSize as number[])[0];
+      unmount();
+      return width;
+    };
+
+    it('lets the size prop win over options.size', () => {
+      expect(
+        widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" size={50} options={{ size: 20 }} />)
+      ).toBe(widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" size={50} />));
+    });
+
+    it('still honours options.size when no size prop is given', () => {
+      expect(
+        widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" options={{ size: 60 }} />)
+      ).toBe(widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" size={60} />));
+    });
+
+    it('defaults to 35 when neither is given', () => {
+      expect(
+        widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" />)
+      ).toBe(widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" size={35} />));
+    });
+
+    it('renders distinct sizes (guards the comparisons above)', () => {
+      const small = widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" size={20} />);
+      const large = widthFor(<MilSymbol position={[0, 0]} sidc="SFG-UCI----D" size={60} />);
+      expect(large).toBeGreaterThan(small);
+    });
+  });
 });

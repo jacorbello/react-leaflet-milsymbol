@@ -1,83 +1,15 @@
 import { ReactNode } from 'react';
 import { LeafletEventHandlerFnMap } from 'leaflet';
+import { Symbol as MsSymbol } from 'milsymbol';
 
 /**
- * Color mode options for milsymbol
+ * Configuration options for a milsymbol Symbol.
+ *
+ * Derived from milsymbol itself rather than hand-copied, so it tracks
+ * upstream automatically. milsymbol does not export SymbolOptions
+ * directly, but getOptions() returns it.
  */
-export type ColorMode = {
-    Civilian: string;
-    Friend: string;
-    Hostile: string;
-    Neutral: string;
-    Unknown: string;
-    Suspect: string;
-};
-
-/**
- * Direct copy of the SymbolOptions type from milsymbol
- */
-export type SymbolOptions = {
-    additionalInformation?: string;
-    alternateMedal?: boolean;
-    altitudeDepth?: string;
-    auxiliaryEquipmentIndicator?: string;
-    civilianColor?: boolean;
-    colorMode?: ColorMode | string;
-    combatEffectiveness?: string;
-    commonIdentifier?: string;
-    country?: string;
-    direction?: string;
-    dtg?: string;
-    engagementBar?: string;
-    engagementType?: string;
-    equipmentTeardownTime?: string;
-    evaluationRating?: string;
-    fill?: boolean;
-    fillColor?: string;
-    fillOpacity?: number;
-    fontfamily?: string;
-    frame?: boolean;
-    frameColor?: ColorMode;
-    guardedUnit?: string;
-    headquartersElement?: string;
-    higherFormation?: string;
-    hostile?: string;
-    hqStaffLength?: number;
-    icon?: boolean;
-    iconColor?: ColorMode | string;
-    iffSif?: string;
-    infoBackground?: ColorMode | string;
-    infoBackgroundFrame?: ColorMode | string;
-    infoColor?: ColorMode | string;
-    infoFields?: boolean;
-    infoOutlineColor?: string;
-    infoOutlineWidth?: number;
-    infoSize?: number;
-    installationComposition?: string;
-    location?: string;
-    monoColor?: string;
-    outlineColor?: ColorMode | string;
-    outlineWidth?: number;
-    padding?: number;
-    platformType?: string;
-    quantity?: string;
-    reinforcedReduced?: string;
-    sidc?: string;
-    sigint?: string;
-    signatureEquipment?: string;
-    simpleStatusModifier?: boolean;
-    size?: number;
-    specialDesignator?: string;
-    specialHeadquarters?: string;
-    speed?: string;
-    speedLeader?: number;
-    square?: boolean;
-    staffComments?: string;
-    standard?: string;
-    strokeWidth?: number;
-    type?: string;
-    uniqueDesignation?: string;
-};
+export type SymbolOptions = ReturnType<MsSymbol['getOptions']>;
 
 /**
  * Props for the MilSymbol component
