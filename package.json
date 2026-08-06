@@ -1,6 +1,6 @@
 {
   "name": "react-leaflet-milsymbol",
-  "description": "A React Leaflet v4 wrapper for the milsymbol library",
+  "description": "A React Leaflet (v4 and v5) wrapper for the milsymbol library",
   "private": false,
   "homepage": "https://jacorbello.github.io/react-leaflet-milsymbol/",
   "repository": {
@@ -16,6 +16,7 @@
   "module": "dist/react-leaflet-milsymbol.es.js",
   "types": "dist/index.d.ts",
   "files": [
+    "CHANGELOG.md",
     "dist/*.js",
     "dist/*.js.map",
     "dist/*.d.ts",
@@ -33,6 +34,7 @@
     "leaflet",
     "react-leaflet",
     "react-leaflet-v4",
+    "react-leaflet-v5",
     "milsymbol",
     "military",
     "symbols",

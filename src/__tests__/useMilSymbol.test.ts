@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useMilSymbol } from '../hooks/useMilSymbol';
 
@@ -103,5 +103,37 @@ describe('useMilSymbol', () => {
     // JSON.stringify produces different strings for different key orders,
     // so these are different instances (documenting the known limitation)
     expect(first).not.toBe(second);
+  });
+
+  describe('invalid SIDC warning', () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    // The dedupe Set in useMilSymbol is module-scoped and persists for the whole
+    // test file, so every SIDC here — valid ones included — must be unique to this
+    // block. Reusing one that an earlier test already passed through would let the
+    // dedupe suppress a warning these tests are supposed to catch.
+
+    it('warns when the SIDC is invalid', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      renderHook(() => useMilSymbol('NOTASIDC-A'));
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0][0]).toContain('NOTASIDC-A');
+    });
+
+    it('warns only once for the same invalid SIDC', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      renderHook(() => useMilSymbol('NOTASIDC-B'));
+      renderHook(() => useMilSymbol('NOTASIDC-B'));
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not warn for a valid SIDC', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      renderHook(() => useMilSymbol('SFGPEWRH--MT'));
+      renderHook(() => useMilSymbol('10031000001211000000'));
+      expect(warn).not.toHaveBeenCalled();
+    });
   });
 });

@@ -178,7 +178,7 @@ const App: FC = () => {
                 <h1>react-leaflet-milsymbol</h1>
                 <p>
                     A React component library for displaying military symbols in Leaflet maps
-                    using the milsymbol library. Easily add military symbols to your React Leaflet v4 maps.
+                    using the milsymbol library. Easily add military symbols to your React Leaflet maps.
                 </p>
             </div>
 
