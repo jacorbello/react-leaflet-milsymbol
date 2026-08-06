@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/jacorbello/react-leaflet-milsymbol/graph/badge.svg?token=I0cmpqpoAm)](https://codecov.io/gh/jacorbello/react-leaflet-milsymbol)
 [![CI](https://github.com/jacorbello/react-leaflet-milsymbol/actions/workflows/ci.yml/badge.svg)](https://github.com/jacorbello/react-leaflet-milsymbol/actions/workflows/ci.yml)
   
-A React Leaflet v4 integration for the milsymbol library, allowing you to easily add military symbols to your React Leaflet maps.
+A React Leaflet integration for the milsymbol library, allowing you to easily add military symbols to your React Leaflet maps. Works with react-leaflet v4 and v5.
 
 **[Live Demo](https://jacorbello.github.io/react-leaflet-milsymbol/)**
 
@@ -34,6 +34,45 @@ This package requires the following peer dependencies:
 - `milsymbol` (v3.0.0 or higher)
 
 Make sure to install these dependencies in your project if you haven't already.
+
+## Getting a SIDC
+
+A **SIDC** (Symbol Identification Code) is the string that tells milsymbol *which* military
+symbol to draw — affiliation (friendly, hostile, …), domain (ground, air, sea), and what the
+unit actually is. It is the only required prop besides `position`, and it is the one thing you
+can't guess.
+
+Two ways to get one:
+
+1. **Build it interactively** — [SIDC Builder (APP-6)](https://sidc.milsymb.net/#/APP6) lets you
+   pick affiliation and unit type from dropdowns and copies out the code.
+2. **Copy one from the table below** and change a single character to adjust it.
+
+> [!TIP]
+> If a symbol renders as an empty box or doesn't appear at all, the SIDC is probably invalid.
+> This library logs a `console.warn` naming the bad code when that happens.
+
+### Common SIDCs
+
+Every code below is verified valid against `milsymbol@3`.
+
+| Symbol | Letter-based (APP-6B/C) | Numeric (APP-6D) |
+| ------ | ----------------------- | ---------------- |
+| Friendly infantry | `SFGPUCI----D` | `10031000141211000000` |
+| Hostile infantry | `SHGPUCI----D` | `10061000141211000000` |
+| Neutral infantry | `SNGPUCI----D` | `10041000141211000000` |
+| Unknown infantry | `SUGPUCI----D` | `10011000141211000000` |
+| Friendly armor | `SFGPUCA----D` | — |
+| Friendly field artillery | `SFGPUCF----D` | — |
+| Friendly air defense | `SFGPUCD----D` | — |
+| Friendly headquarters | `SFGPUH-----D` | — |
+| Friendly fixed-wing aircraft | `SFAPMFF----` | `10030100001101000000` |
+| Friendly rotary-wing aircraft | `SFAPMHR----` | — |
+| Friendly surface combatant | `SFSPCLBB---` | `10033000001201000000` |
+
+**Changing affiliation** in a letter-based code is the 2nd character: `F` friendly (blue),
+`H` hostile (red), `N` neutral (green), `U` unknown (yellow). So `SFGPUCI----D` →
+`SHGPUCI----D` turns friendly infantry into hostile infantry.
 
 ## SIDC Formats
 
@@ -207,7 +246,7 @@ function SymbolPreview() {
   return (
     <div>
       <h3>Symbol Preview</h3>
-      <div dangerouslySetInnerHTML={{ __html: symbol.toSVG() }} />
+      <div dangerouslySetInnerHTML={{ __html: symbol.asSVG() }} />
     </div>
   );
 }

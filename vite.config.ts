@@ -39,7 +39,7 @@ export default defineConfig({
           'react/jsx-runtime': 'jsxRuntime',
         },
         sourcemap: true,
-        banner: '/*\n * react-leaflet-milsymbol\n * A React Leaflet v4 wrapper for milsymbol\n */',
+        banner: '/*\n * react-leaflet-milsymbol\n * A React Leaflet (v4 and v5) wrapper for milsymbol\n */',
       },
     },
     sourcemap: true,
