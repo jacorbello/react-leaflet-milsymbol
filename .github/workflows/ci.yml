@@ -25,3 +25,54 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage/coverage-final.json
+
+  # Exercises the peer range in package.json (react-leaflet ^4 || ^5), which the
+  # lockfile alone cannot cover. react-leaflet's own peers pin React per major, so
+  # these axes are paired rather than a cross-product.
+  #
+  # ponytail: pins one version per major, not the whole ^4 || ^5 range.
+  # Add a row when a new major ships.
+  compat:
+    name: react-leaflet ${{ matrix.react-leaflet }} / react ${{ matrix.react }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - react-leaflet: '4.2.1'
+            react: '18'
+          - react-leaflet: '5.0.0'
+            react: '19'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      # --no-save keeps the lockfile authoritative for the default (v5) build.
+      # --legacy-peer-deps is required because devDependencies still declare React 19,
+      # but it also skips peer installation, which prunes @testing-library/dom
+      # (a peer of @testing-library/react) — so it must be reinstated explicitly.
+      - name: Install compat versions
+        run: npm install --no-save --legacy-peer-deps
+          react@${{ matrix.react }}
+          react-dom@${{ matrix.react }}
+          react-leaflet@${{ matrix.react-leaflet }}
+          @testing-library/dom@^10
+      # A silently-failed override would make the run below meaningless.
+      # Read package.json off disk rather than require()-ing it: react-leaflet's
+      # "exports" map does not expose the ./package.json subpath.
+      - name: Verify installed versions
+        run: |
+          node -e "
+            const fs = require('fs');
+            const v = (p) => JSON.parse(fs.readFileSync('node_modules/' + p + '/package.json', 'utf8')).version;
+            const rl = v('react-leaflet'), r = v('react');
+            console.log('react-leaflet', rl, '| react', r);
+            if (!rl.startsWith('${{ matrix.react-leaflet }}')) throw new Error('react-leaflet override failed: ' + rl);
+            if (!r.startsWith('${{ matrix.react }}.')) throw new Error('react override failed: ' + r);
+          "
+      # Tests only. Lint and typecheck cannot vary by react-leaflet version, a second
+      # Codecov upload would double-report, and the built artifact ships against the
+      # repo's own pinned devDeps — `check` remains the gate for all three.
+      - run: npx vitest run
