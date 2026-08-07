@@ -44,6 +44,27 @@ describe('demo app', () => {
         expect(within(screen.getByRole('row', { name: /^icon/ })).getByText('true')).toBeInTheDocument();
     });
 
+    // The map's <MilSymbol> deliberately carries no `key`, so it must update the existing
+    // Leaflet marker rather than being remounted. This asserts the icon really does change
+    // without one — remove the assertion and a silent "marker never updates" regression
+    // would look identical to a pass.
+    it('updates the map marker in place when the SIDC changes', async () => {
+        render(<App />);
+        await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Playground' })); });
+        await flushDebounce();
+
+        const markerSvg = () =>
+            document.querySelector('.leaflet-marker-icon svg')?.outerHTML;
+        const before = markerSvg();
+        expect(before).toBeTruthy();
+
+        const input = screen.getByLabelText('Symbol identification code');
+        await act(async () => { fireEvent.change(input, { target: { value: 'SHGPUCI----D' } }); });
+        await flushDebounce();
+
+        expect(markerSvg()).not.toBe(before);
+    });
+
     it('affiliation button rewrites the code in place', async () => {
         render(<App />);
         await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Playground' })); });

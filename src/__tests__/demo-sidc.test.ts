@@ -75,8 +75,8 @@ describe('patchAffiliation', () => {
 });
 
 describe('hash state', () => {
-    it('round-trips tab, sidc and size', () => {
-        const state = { tab: 'playground', sidc: 'SFGPUCI----D', size: 40 };
+    it('round-trips tab and sidc', () => {
+        const state = { tab: 'playground', sidc: 'SFGPUCI----D' };
         expect(parseHash(buildHash(state))).toEqual(state);
     });
 
@@ -92,7 +92,10 @@ describe('hash state', () => {
         expect(buildHash({})).toBe('');
     });
 
-    it('ignores a non-numeric size instead of producing NaN', () => {
-        expect(parseHash('#playground&size=abc').size).toBeUndefined();
+    it('ignores unknown keys rather than carrying them through', () => {
+        expect(parseHash('#playground&sidc=SFGPUCI----D&evil=1')).toEqual({
+            tab: 'playground',
+            sidc: 'SFGPUCI----D',
+        });
     });
 });

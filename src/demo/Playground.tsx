@@ -180,8 +180,11 @@ export const Playground: FC<Props> = ({ sidc, onSidcChange }) => {
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 />
+                                {/* No `key` here on purpose: MilSymbol updates the marker's
+                                    icon in place when sidc/options change, so keying it by
+                                    sidc would destroy and rebuild the Leaflet marker on every
+                                    edit — the churn 0.3.0 removed from the library. */}
                                 <MilSymbol
-                                    key={debouncedSidc}
                                     position={[51.505, -0.09]}
                                     sidc={debouncedSidc}
                                     options={symbolOptions}

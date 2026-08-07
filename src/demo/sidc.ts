@@ -66,7 +66,6 @@ export const readAffiliation = (sidc: string): Affiliation | null => {
 export type HashState = {
     tab?: string;
     sidc?: string;
-    size?: number;
 };
 
 /**
@@ -91,18 +90,15 @@ export const parseHash = (hash: string): HashState => {
         const value = decodeURIComponent(part.slice(eq + 1));
         if (key === 'sidc') state.sidc = value;
         else if (key === 'tab') state.tab = value;
-        else if (key === 'size') {
-            const n = Number(value);
-            if (Number.isFinite(n)) state.size = n;
-        }
+        // Unknown keys are ignored rather than carried through, so a crafted hash
+        // can't smuggle extra state into the app.
     }
     return state;
 };
 
-export const buildHash = ({ tab, sidc, size }: HashState): string => {
+export const buildHash = ({ tab, sidc }: HashState): string => {
     const parts: string[] = [];
     if (tab) parts.push(encodeURIComponent(tab));
     if (sidc) parts.push(`sidc=${encodeURIComponent(sidc)}`);
-    if (size !== undefined) parts.push(`size=${size}`);
     return parts.length ? `#${parts.join('&')}` : '';
 };
